@@ -1,0 +1,24 @@
+name: Build Watch IPA
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build App
+        run: |
+          # This builds the binary directly from your code
+          swift build -c release --triple arm64_32-apple-watchos
+          
+          # This creates the Payload folder structure we discussed
+          mkdir -p Payload/Omnitrix.app
+          cp .build/arm64_32-apple-watchos/release/Omnitrix Payload/Omnitrix.app/Omnitrix
+          cp Info.plist Payload/Omnitrix.app/
+          
+          # Zips it into the final IPA
+          zip -r Omnitrix.ipa Payload
+      - name: Upload Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: Omnitrix-IPA
+          path: Omnitrix.ipa
