@@ -1,0 +1,11 @@
+name: Build Watch IPA
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Archive
+        run: |
+          xcodebuild -project Omnitrix.xcodeproj -scheme Omnitrix -archivePath Omnitrix.xcarchive archive
+          xcodebuild -exportArchive -archivePath Omnitrix.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath .
